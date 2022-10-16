@@ -28,14 +28,6 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		requiredOccurenceCount: 10,
 	},
 	{
-		id: "firstLink",
-		type: "connectionsCreated",
-		name: "Making connections",
-		description:
-			"You've created your first link! Check out those connections on your graph!",
-		requiredOccurenceCount: 1,
-	},
-	{
 		id: "oneHundredNotes",
 		type: "notesCreated",
 		name: "100 club",
