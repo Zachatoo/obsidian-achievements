@@ -1,5 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import AchievementsPlugin from "./main";
+import { SEEDED_ACHIEVEMENTS } from "./seededAchievements";
 import { DEFAULT_SETTINGS } from "./settings";
 
 export class AchievementsSettingTab extends PluginSettingTab {
@@ -29,5 +30,18 @@ export class AchievementsSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 			});
+
+		containerEl.createEl("h2", { text: "Achievements List" });
+
+		SEEDED_ACHIEVEMENTS.forEach((achievement) => {
+			const progressEl = document.createElement("progress", {});
+			progressEl.value = this.plugin.settings[achievement.type];
+			progressEl.max = achievement.requiredOccurenceCount;
+
+			new Setting(containerEl)
+				.setName(achievement.name)
+				.setDesc(achievement.description)
+				.settingEl.appendChild(progressEl);
+		});
 	}
 }
