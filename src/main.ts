@@ -54,15 +54,18 @@ export default class AchievementsPlugin extends Plugin {
 		let type: AchievementType | undefined;
 
 		if (currFileCount > this.settings.noteCount) {
-			this.settings.notesCreated += 1;
+			this.settings.notesCreated +=
+				currFileCount - this.settings.noteCount;
 			this.settings.noteCount = currFileCount;
 			type = "notesCreated";
 		} else if (currFileCount < this.settings.noteCount) {
-			this.settings.notesDeleted += 1;
+			this.settings.notesDeleted +=
+				this.settings.noteCount - currFileCount;
 			this.settings.noteCount = currFileCount;
 			type = "notesDeleted";
 		} else if (currInternalLinkCount > this.settings.internalLinkCount) {
-			this.settings.internalLinksCreated += 1;
+			this.settings.internalLinksCreated +=
+				currInternalLinkCount - this.settings.internalLinkCount;
 			this.settings.internalLinkCount = currInternalLinkCount;
 			type = "internalLinksCreated";
 		}
