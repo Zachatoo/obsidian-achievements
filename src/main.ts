@@ -12,18 +12,23 @@ export default class AchievementsPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerEvent(
-			this.app.metadataCache.on("changed", (file, data, cache) =>
-				this.handleFileCreateUpdateDelete(file)
-			)
+			this.app.metadataCache.on("changed", (file, _data, _cache) => {
+				this.handleFileCreateUpdateDelete(file);
+			})
 		);
 
 		this.registerEvent(
-			this.app.metadataCache.on("deleted", (file, prevCache) =>
+			this.app.metadataCache.on("deleted", (file, _prevCache) =>
 				this.handleFileCreateUpdateDelete(file)
 			)
 		);
 
 		this.addSettingTab(new AchievementsSettingTab(this.app, this));
+
+		this.settings.noteCount = this.app.vault.getMarkdownFiles().length;
+		this.settings.internalLinkCount =
+			app.fileManager.getAllLinkResolutions().length;
+		await this.saveSettings();
 	}
 
 	onunload() {
@@ -44,27 +49,33 @@ export default class AchievementsPlugin extends Plugin {
 
 	async handleFileCreateUpdateDelete(file: TAbstractFile) {
 		const currFileCount = file.vault.getMarkdownFiles().length;
+		const currInternalLinkCount =
+			app.fileManager.getAllLinkResolutions().length;
 		let type: AchievementType | undefined;
 
 		if (currFileCount > this.settings.noteCount) {
 			this.settings.notesCreated += 1;
+			this.settings.noteCount = currFileCount;
 			type = "notesCreated";
-		}
-		if (currFileCount < this.settings.noteCount) {
+		} else if (currFileCount < this.settings.noteCount) {
 			this.settings.notesDeleted += 1;
+			this.settings.noteCount = currFileCount;
 			type = "notesDeleted";
+		} else if (currInternalLinkCount > this.settings.internalLinkCount) {
+			this.settings.internalLinksCreated += 1;
+			this.settings.internalLinkCount = currInternalLinkCount;
+			type = "internalLinksCreated";
 		}
 
+		this.getNewAchievementMaybe(type);
+		await this.saveSettings();
+	}
+
+	getNewAchievementMaybe(type?: AchievementType) {
 		if (!type) {
 			return;
 		}
 
-		this.settings.noteCount = currFileCount;
-
-		await this.getNewAchievementMaybe(type);
-	}
-
-	async getNewAchievementMaybe(type: AchievementType) {
 		const newAchievement = SEEDED_ACHIEVEMENTS.find(
 			(achievement) =>
 				achievement.type === type &&
@@ -75,6 +86,5 @@ export default class AchievementsPlugin extends Plugin {
 			this.settings.achievedAchievementIDs.push(newAchievement.id);
 			new Notice(`${newAchievement.name}\n${newAchievement.description}`);
 		}
-		await this.saveSettings();
 	}
 }

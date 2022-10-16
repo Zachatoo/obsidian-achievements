@@ -3,7 +3,8 @@ export interface Settings {
 	noteCount: number;
 	notesCreated: number;
 	notesDeleted: number;
-	connectionsCreated: number;
+	internalLinkCount: number;
+	internalLinksCreated: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -11,5 +12,6 @@ export const DEFAULT_SETTINGS: Settings = {
 	noteCount: 0,
 	notesCreated: 0,
 	notesDeleted: 0,
-	connectionsCreated: 0,
+	internalLinkCount: 0,
+	internalLinksCreated: 0,
 };

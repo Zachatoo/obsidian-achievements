@@ -1,7 +1,7 @@
 export type AchievementType =
 	| "notesCreated"
 	| "notesDeleted"
-	| "connectionsCreated";
+	| "internalLinksCreated";
 
 export interface Achievement {
 	id: string;
@@ -47,5 +47,37 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		name: "Taking out the trash",
 		description: "You've deleted 10 notes. Way to keep your vault tidy!",
 		requiredOccurenceCount: 10,
+	},
+	{
+		id: "firstInternalLink",
+		type: "internalLinksCreated",
+		name: "Linking your thinking",
+		description:
+			"You've created your first internal link. It's all coming together!",
+		requiredOccurenceCount: 1,
+	},
+	{
+		id: "tenInternalLinks",
+		type: "internalLinksCreated",
+		name: "Making connections",
+		description:
+			"You've created 10 internal links. Your graph is looking great!",
+		requiredOccurenceCount: 10,
+	},
+	{
+		id: "oneHundredInternalLinks",
+		type: "internalLinksCreated",
+		name: "Conspiracy theorist",
+		description:
+			"You've created 100 internal links. Your graph is starting to look like a conspiracy board...",
+		requiredOccurenceCount: 100,
+	},
+	{
+		id: "oneThousandInternalLinks",
+		type: "internalLinksCreated",
+		name: "Air traffic controller",
+		description:
+			"You've created 1000 internal links. If you haven't already, you should post your graph on the official Obsidian discord.",
+		requiredOccurenceCount: 1000,
 	},
 ];
