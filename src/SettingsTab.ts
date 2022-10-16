@@ -22,6 +22,7 @@ export class AchievementsSettingTab extends PluginSettingTab {
 			const progressEl = document.createElement("progress", {});
 			progressEl.value = this.plugin.settings[achievement.type];
 			progressEl.max = achievement.requiredOccurenceCount;
+			progressEl.addClass("achievements-plugin__progress");
 
 			new Setting(containerEl)
 				.setName(achievement.name)
