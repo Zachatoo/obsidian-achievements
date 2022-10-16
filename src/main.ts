@@ -63,34 +63,30 @@ export default class AchievementsPlugin extends Plugin {
 		const currNoteCount = file.vault.getMarkdownFiles().length;
 		const currInternalLinkCount =
 			app.fileManager.getAllLinkResolutions().length;
-		let type: AchievementType | undefined;
 
 		if (currNoteCount > this.settings.noteCount) {
 			this.settings.notesCreated +=
 				currNoteCount - this.settings.noteCount;
 			this.settings.noteCount = currNoteCount;
-			type = "notesCreated";
-		} else if (currNoteCount < this.settings.noteCount) {
+			this.getNewAchievementMaybe("notesCreated");
+		}
+		if (currNoteCount < this.settings.noteCount) {
 			this.settings.notesDeleted +=
 				this.settings.noteCount - currNoteCount;
 			this.settings.noteCount = currNoteCount;
-			type = "notesDeleted";
-		} else if (currInternalLinkCount > this.settings.internalLinkCount) {
+			this.getNewAchievementMaybe("notesDeleted");
+		}
+		if (currInternalLinkCount > this.settings.internalLinkCount) {
 			this.settings.internalLinksCreated +=
 				currInternalLinkCount - this.settings.internalLinkCount;
 			this.settings.internalLinkCount = currInternalLinkCount;
-			type = "internalLinksCreated";
+			this.getNewAchievementMaybe("internalLinksCreated");
 		}
 
-		this.getNewAchievementMaybe(type);
 		await this.saveSettings();
 	}
 
-	getNewAchievementMaybe(type?: AchievementType) {
-		if (!type) {
-			return;
-		}
-
+	getNewAchievementMaybe(type: AchievementType) {
 		const newAchievement = SEEDED_ACHIEVEMENTS.find(
 			(achievement) =>
 				achievement.type === type &&
