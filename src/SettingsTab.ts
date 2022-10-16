@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import AchievementsPlugin from "./main";
+import { ResetProgressModal } from "./ResetProgressModal";
 import { SEEDED_ACHIEVEMENTS } from "./seededAchievements";
-import { DEFAULT_SETTINGS } from "./settings";
 
 export class AchievementsSettingTab extends PluginSettingTab {
 	plugin: AchievementsPlugin;
@@ -16,21 +16,6 @@ export class AchievementsSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl("h2", { text: "Achievements Plugin Settings" });
-
-		new Setting(containerEl)
-			.setName("Reset progress")
-			.setDesc("Resets all achievement progress. THIS CANNOT BE UNDONE.")
-			.addButton((component) => {
-				component
-					.setButtonText("Reset")
-					.setWarning()
-					.onClick(async () => {
-						this.plugin.settings = DEFAULT_SETTINGS;
-						await this.plugin.saveSettings();
-					});
-			});
-
 		containerEl.createEl("h2", { text: "Achievements List" });
 
 		SEEDED_ACHIEVEMENTS.forEach((achievement) => {
@@ -43,5 +28,19 @@ export class AchievementsSettingTab extends PluginSettingTab {
 				.setDesc(achievement.description)
 				.settingEl.appendChild(progressEl);
 		});
+
+		containerEl.createEl("h2", { text: "Danger Zone" });
+
+		new Setting(containerEl)
+			.setName("Reset progress")
+			.setDesc("Resets all achievement progress. THIS CANNOT BE UNDONE.")
+			.addButton((component) => {
+				component
+					.setButtonText("Reset")
+					.setWarning()
+					.onClick(async () => {
+						new ResetProgressModal(this.app, this.plugin).open();
+					});
+			});
 	}
 }

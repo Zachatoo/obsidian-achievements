@@ -1,8 +1,5 @@
-/*
-
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
-*/
+.achievements-plugin__reset-modal__button-container {
+	display: flex;
+	justify-content: end;
+	gap: 0.5rem;
+}
