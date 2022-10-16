@@ -1,6 +1,5 @@
 import { App, Modal } from "obsidian";
 import AchievementsPlugin from "./main";
-import { DEFAULT_SETTINGS } from "./settings";
 
 export class ResetProgressModal extends Modal {
 	plugin: AchievementsPlugin;
@@ -36,8 +35,7 @@ export class ResetProgressModal extends Modal {
 			cls: "mod-warning",
 		});
 		confirmBtn.on("click", "button", async () => {
-			this.plugin.settings = DEFAULT_SETTINGS;
-			await this.plugin.saveSettings();
+			await this.plugin.resetSettings();
 			this.close();
 		});
 	}

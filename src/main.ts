@@ -47,21 +47,33 @@ export default class AchievementsPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
+	async resetSettings() {
+		const currNoteCount = this.app.vault.getMarkdownFiles().length;
+		const currInternalLinkCount =
+			app.fileManager.getAllLinkResolutions().length;
+		this.settings = {
+			...DEFAULT_SETTINGS,
+			noteCount: currNoteCount,
+			internalLinkCount: currInternalLinkCount,
+		};
+		await this.saveSettings();
+	}
+
 	async handleFileCreateUpdateDelete(file: TAbstractFile) {
-		const currFileCount = file.vault.getMarkdownFiles().length;
+		const currNoteCount = file.vault.getMarkdownFiles().length;
 		const currInternalLinkCount =
 			app.fileManager.getAllLinkResolutions().length;
 		let type: AchievementType | undefined;
 
-		if (currFileCount > this.settings.noteCount) {
+		if (currNoteCount > this.settings.noteCount) {
 			this.settings.notesCreated +=
-				currFileCount - this.settings.noteCount;
-			this.settings.noteCount = currFileCount;
+				currNoteCount - this.settings.noteCount;
+			this.settings.noteCount = currNoteCount;
 			type = "notesCreated";
-		} else if (currFileCount < this.settings.noteCount) {
+		} else if (currNoteCount < this.settings.noteCount) {
 			this.settings.notesDeleted +=
-				this.settings.noteCount - currFileCount;
-			this.settings.noteCount = currFileCount;
+				this.settings.noteCount - currNoteCount;
+			this.settings.noteCount = currNoteCount;
 			type = "notesDeleted";
 		} else if (currInternalLinkCount > this.settings.internalLinkCount) {
 			this.settings.internalLinksCreated +=
