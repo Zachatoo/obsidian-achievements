@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-achievements",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "Add achievements to Obsidian.",
 	"main": "src/main.js",
 	"scripts": {
