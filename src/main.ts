@@ -43,7 +43,7 @@ export default class AchievementsPlugin extends Plugin {
 	}
 
 	async handleFileCreateUpdateDelete(file: TAbstractFile) {
-		const currFileCount = getFileCountFromFileMap(file.vault.fileMap);
+		const currFileCount = file.vault.getMarkdownFiles().length;
 		let type: AchievementType | undefined;
 
 		if (currFileCount > this.settings.noteCount) {
@@ -77,10 +77,4 @@ export default class AchievementsPlugin extends Plugin {
 		}
 		await this.saveSettings();
 	}
-}
-
-function getFileCountFromFileMap(fileMap: { [key: string]: any }) {
-	return Object.keys(fileMap).filter((abstractFile) =>
-		abstractFile.endsWith(".md")
-	).length;
 }
