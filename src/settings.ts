@@ -5,6 +5,7 @@ export interface Settings {
 	notesDeleted: number;
 	internalLinkCount: number;
 	internalLinksCreated: number;
+	"command-palette:open": number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -14,4 +15,5 @@ export const DEFAULT_SETTINGS: Settings = {
 	notesDeleted: 0,
 	internalLinkCount: 0,
 	internalLinksCreated: 0,
+	"command-palette:open": 0,
 };

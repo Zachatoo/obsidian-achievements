@@ -9,4 +9,12 @@ declare module "obsidian" {
 			sourceFile: TFile;
 		}[];
 	}
+
+	interface App {
+		commands: Commands;
+	}
+
+	interface Commands {
+		executeCommand: (command: Command) => boolean;
+	}
 }

@@ -2,9 +2,11 @@ import { Notice, Plugin, TAbstractFile } from "obsidian";
 import { DEFAULT_SETTINGS, Settings } from "./settings";
 import { AchievementsSettingTab } from "./SettingsTab";
 import { AchievementType, SEEDED_ACHIEVEMENTS } from "./seededAchievements";
+import { onCommandTrigger } from "./commands";
 
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
+	uninstallCommands: Function[] = [];
 
 	async onload() {
 		console.log("loading Achievements plugin");
@@ -23,6 +25,14 @@ export default class AchievementsPlugin extends Plugin {
 			)
 		);
 
+		this.uninstallCommands.push(
+			onCommandTrigger("command-palette:open", async () => {
+				this.settings["command-palette:open"] += 1;
+				this.getNewAchievementMaybe("command-palette:open");
+				await this.saveSettings();
+			})
+		);
+
 		this.addSettingTab(new AchievementsSettingTab(this.app, this));
 
 		this.settings.noteCount = this.app.vault.getMarkdownFiles().length;
@@ -33,6 +43,9 @@ export default class AchievementsPlugin extends Plugin {
 
 	onunload() {
 		console.log("unloading Achievements plugin");
+		this.uninstallCommands.forEach((uninstallCommand) => {
+			uninstallCommand();
+		});
 	}
 
 	async loadSettings() {

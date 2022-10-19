@@ -1,7 +1,8 @@
 export type AchievementType =
 	| "notesCreated"
 	| "notesDeleted"
-	| "internalLinksCreated";
+	| "internalLinksCreated"
+	| "command-palette:open";
 
 export interface Achievement {
 	id: string;
@@ -79,5 +80,13 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		description:
 			"You've created 1000 internal links. If you haven't already, you should post your graph on the official Obsidian discord.",
 		requiredOccurenceCount: 1000,
+	},
+	{
+		id: "command-palette:open",
+		type: "command-palette:open",
+		name: "Commander",
+		description:
+			"You've opened the command palette. Way to take charge of your note taking!",
+		requiredOccurenceCount: 1,
 	},
 ];
