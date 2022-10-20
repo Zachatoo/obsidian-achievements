@@ -2,7 +2,7 @@ export type AchievementType =
 	| "notesCreated"
 	| "notesDeleted"
 	| "internalLinksCreated"
-	| "command-palette:open";
+	| "commandPaletteOpened";
 
 export interface Achievement {
 	id: string;
@@ -83,7 +83,7 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 	},
 	{
 		id: "command-palette:open",
-		type: "command-palette:open",
+		type: "commandPaletteOpened",
 		name: "Commander",
 		description:
 			"You've opened the command palette. Way to take charge of your note taking!",

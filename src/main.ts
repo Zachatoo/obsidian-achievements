@@ -27,8 +27,8 @@ export default class AchievementsPlugin extends Plugin {
 
 		this.uninstallCommands.push(
 			onCommandTrigger("command-palette:open", async () => {
-				this.settings["command-palette:open"] += 1;
-				this.getNewAchievementMaybe("command-palette:open");
+				this.settings.commandPaletteOpened += 1;
+				this.getNewAchievementMaybe("commandPaletteOpened");
 				await this.saveSettings();
 			})
 		);
