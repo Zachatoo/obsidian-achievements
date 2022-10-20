@@ -6,6 +6,7 @@ export interface Settings {
 	internalLinkCount: number;
 	internalLinksCreated: number;
 	commandPaletteOpened: number;
+	quickSwitcherOpened: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -16,4 +17,5 @@ export const DEFAULT_SETTINGS: Settings = {
 	internalLinkCount: 0,
 	internalLinksCreated: 0,
 	commandPaletteOpened: 0,
+	quickSwitcherOpened: 0,
 };

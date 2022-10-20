@@ -33,6 +33,14 @@ export default class AchievementsPlugin extends Plugin {
 			})
 		);
 
+		this.uninstallCommands.push(
+			onCommandTrigger("switcher:open", async () => {
+				this.settings.quickSwitcherOpened += 1;
+				this.getNewAchievementMaybe("quickSwitcherOpened");
+				await this.saveSettings();
+			})
+		);
+
 		this.addSettingTab(new AchievementsSettingTab(this.app, this));
 
 		this.settings.noteCount = this.app.vault.getMarkdownFiles().length;
