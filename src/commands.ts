@@ -1,5 +1,5 @@
 import { around } from "monkey-around";
-import { Command } from "obsidian";
+import type { Command } from "obsidian";
 
 export function onCommandTrigger(id: string, cb: Function) {
 	const uninstallCommand = around(this.app.commands, {

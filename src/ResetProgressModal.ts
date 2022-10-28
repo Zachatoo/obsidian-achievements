@@ -1,8 +1,10 @@
 import { App, Modal } from "obsidian";
-import AchievementsPlugin from "./main";
+import type AchievementsPlugin from "./main";
+import ResetProgressModalComponent from "./ResetProgressModal.svelte";
 
 export class ResetProgressModal extends Modal {
 	plugin: AchievementsPlugin;
+	component: ResetProgressModalComponent;
 
 	constructor(app: App, plugin: AchievementsPlugin) {
 		super(app);
@@ -10,34 +12,18 @@ export class ResetProgressModal extends Modal {
 	}
 
 	onOpen() {
-		let { contentEl } = this;
-		contentEl.createEl("h2", { text: "Reset Progress" });
-		contentEl.createEl("p", {
-			text: "Resets all achievement progress. THIS CANNOT BE UNDONE.",
+		this.component = new ResetProgressModalComponent({
+			target: this.contentEl,
+			props: {
+				close: () => this.close(),
+				closeAndReset: () => this.closeAndReset(),
+			},
 		});
-		contentEl.createEl("p", {
-			text: "Are you sure you want to continue?",
-		});
+	}
 
-		const buttonContainerEl = contentEl.createEl("div", {
-			cls: "achievements-plugin__reset-modal__button-container",
-		});
-
-		const cancelBtn = buttonContainerEl.createEl("button", {
-			text: "Cancel",
-		});
-		cancelBtn.on("click", "button", () => {
-			this.close();
-		});
-
-		const confirmBtn = buttonContainerEl.createEl("button", {
-			text: "Reset",
-			cls: "mod-warning",
-		});
-		confirmBtn.on("click", "button", async () => {
-			await this.plugin.resetSettings();
-			this.close();
-		});
+	async closeAndReset() {
+		await this.plugin.resetSettings();
+		this.close();
 	}
 
 	onClose() {

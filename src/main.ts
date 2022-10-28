@@ -1,7 +1,9 @@
 import { Notice, Plugin, TAbstractFile } from "obsidian";
-import { DEFAULT_SETTINGS, Settings } from "./settings";
+import { DEFAULT_SETTINGS } from "./settings";
+import type { Settings } from "./settings";
 import { AchievementsSettingTab } from "./SettingsTab";
-import { AchievementType, SEEDED_ACHIEVEMENTS } from "./seededAchievements";
+import { SEEDED_ACHIEVEMENTS } from "./seededAchievements";
+import type { AchievementType } from "./seededAchievements";
 import { onCommandTrigger } from "./commands";
 
 export default class AchievementsPlugin extends Plugin {
