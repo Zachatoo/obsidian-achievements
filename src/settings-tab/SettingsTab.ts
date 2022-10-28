@@ -1,7 +1,8 @@
 import { App, PluginSettingTab } from "obsidian";
-import type AchievementsPlugin from "./main";
-import { ResetProgressModal } from "./ResetProgressModal";
+import type AchievementsPlugin from "src/main";
+import { ResetProgressModal } from "src/reset-progress-modal/ResetProgressModal";
 import SettingsTabComponent from "./SettingsTab.svelte";
+import store from "src/store";
 
 export class AchievementsSettingTab extends PluginSettingTab {
 	plugin: AchievementsPlugin;
@@ -13,13 +14,14 @@ export class AchievementsSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
+		store.plugin.set(this.plugin);
+
 		const { containerEl } = this;
 		containerEl.empty();
 
 		this.component = new SettingsTabComponent({
 			target: containerEl,
 			props: {
-				settings: this.plugin.settings,
 				openResetModal: () => this.openResetModal(),
 			},
 		});

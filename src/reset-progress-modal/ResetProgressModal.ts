@@ -1,5 +1,6 @@
 import { App, Modal } from "obsidian";
-import type AchievementsPlugin from "./main";
+import type AchievementsPlugin from "src/main";
+import store from "src/store";
 import ResetProgressModalComponent from "./ResetProgressModal.svelte";
 
 export class ResetProgressModal extends Modal {
@@ -12,6 +13,8 @@ export class ResetProgressModal extends Modal {
 	}
 
 	onOpen() {
+		store.plugin.set(this.plugin);
+
 		this.component = new ResetProgressModalComponent({
 			target: this.contentEl,
 			props: {

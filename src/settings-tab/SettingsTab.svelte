@@ -1,17 +1,20 @@
 <script lang="ts">
   import { Button, SettingItem } from 'obsidian-svelte';
-  import { SEEDED_ACHIEVEMENTS } from "./seededAchievements";
-	import type { Settings } from './settings';
+	import type AchievementsPlugin from 'src/main';
+  import { SEEDED_ACHIEVEMENTS } from "src/seededAchievements";
+	import store from 'src/store';
 
-  export let settings: Settings;
   export let openResetModal: () => void;
+  
+  let plugin: AchievementsPlugin;
+  store.plugin.subscribe((p) => (plugin = p));
 </script>
 
 <h2>Achievements List</h2>
 
 {#each SEEDED_ACHIEVEMENTS as achievement}
   <SettingItem name={achievement.name} description={achievement.description}>
-    <progress class="achievements-plugin__progress" value={settings[achievement.type]} max={achievement.requiredOccurenceCount} />
+    <progress class="achievements-plugin__progress" value={plugin.settings[achievement.type]} max={achievement.requiredOccurenceCount} />
   </SettingItem>
 {/each}
 

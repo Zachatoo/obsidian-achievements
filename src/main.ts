@@ -1,10 +1,11 @@
 import { Notice, Plugin, TAbstractFile } from "obsidian";
-import { DEFAULT_SETTINGS } from "./settings";
-import type { Settings } from "./settings";
-import { AchievementsSettingTab } from "./SettingsTab";
-import { SEEDED_ACHIEVEMENTS } from "./seededAchievements";
-import type { AchievementType } from "./seededAchievements";
-import { onCommandTrigger } from "./commands";
+import { DEFAULT_SETTINGS } from "src/settings";
+import type { Settings } from "src/settings";
+import { AchievementsSettingTab } from "src/settings-tab/SettingsTab";
+import { SEEDED_ACHIEVEMENTS } from "src/seededAchievements";
+import type { AchievementType } from "src/seededAchievements";
+import { onCommandTrigger } from "src/commands";
+import store from "./store";
 
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
@@ -68,6 +69,7 @@ export default class AchievementsPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		store.plugin.set(this);
 	}
 
 	async resetSettings() {
