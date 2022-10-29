@@ -130,15 +130,17 @@ export default class AchievementsPlugin extends Plugin {
 	}
 
 	getNewAchievementMaybe(type: AchievementType) {
-		const newAchievement = SEEDED_ACHIEVEMENTS.find(
+		const newAchievements = SEEDED_ACHIEVEMENTS.filter(
 			(achievement) =>
 				achievement.type === type &&
 				this.settings[type] >= achievement.requiredOccurenceCount &&
 				!this.settings.achievedAchievementIDs.includes(achievement.id)
 		);
-		if (newAchievement) {
-			this.settings.achievedAchievementIDs.push(newAchievement.id);
-			new Notice(`${newAchievement.name}\n${newAchievement.description}`);
+		if (newAchievements.length > 0) {
+			newAchievements.forEach((achievement) => {
+				this.settings.achievedAchievementIDs.push(achievement.id);
+				new Notice(`${achievement.name}\n${achievement.description}`);
+			});
 		}
 	}
 }
