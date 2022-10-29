@@ -14,7 +14,11 @@
 
 {#each SEEDED_ACHIEVEMENTS as achievement}
   <SettingItem name={achievement.name} description={achievement.description}>
-    <progress class="achievements-plugin__progress" value={plugin.settings[achievement.type]} max={achievement.requiredOccurenceCount} />
+    <progress
+      class="achievements-plugin__progress"
+      value={Math.min(plugin.settings[achievement.type], achievement.requiredOccurenceCount)}
+      max={achievement.requiredOccurenceCount}
+    />
   </SettingItem>
 {/each}
 
