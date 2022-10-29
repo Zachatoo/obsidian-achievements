@@ -8,7 +8,6 @@ import {
 import { onCommandTrigger } from "./commands";
 import store from "./store";
 import { fileHasCallout, getFileHeadingLevelsCount } from "./markdownHelpers";
-import { getTagsCount } from "./metadataCacheHelpers";
 import type { InternalCounts } from "./InternalCounts";
 
 export default class AchievementsPlugin extends Plugin {
@@ -80,26 +79,36 @@ export default class AchievementsPlugin extends Plugin {
 	}
 
 	setupInternalCounts() {
-		const currNoteCount = this.app.vault.getMarkdownFiles().length;
-		const currInternalLinkCount =
-			this.app.fileManager.getAllLinkResolutions().length;
-		const currTagsCount = getTagsCount(this.app.metadataCache);
-
 		this.internalCounts = {
-			noteCount: currNoteCount,
-			internalLinkCount: currInternalLinkCount,
-			tagCount: currTagsCount,
+			noteCount: this.getMarkdownFilesCount(),
+			internalLinkCount: this.getInternalLinksCount(),
+			tagCount: this.getTagsCount(),
 		};
+	}
+
+	getMarkdownFilesCount() {
+		return this.app.vault.getMarkdownFiles().length;
+	}
+
+	getInternalLinksCount() {
+		return this.app.fileManager.getAllLinkResolutions().length;
+	}
+
+	getTagsCount() {
+		const tagsObj = this.app.metadataCache.getTags();
+		const baseTagsArr = Object.entries(tagsObj).filter(
+			([key]) => !key.includes("/")
+		);
+		return baseTagsArr.reduce((prev, curr) => prev + curr[1], 0);
 	}
 
 	async handleFileCreateUpdateDelete(
 		file: TAbstractFile,
 		cache?: CachedMetadata
 	) {
-		const currNoteCount = file.vault.getMarkdownFiles().length;
-		const currInternalLinkCount =
-			this.app.fileManager.getAllLinkResolutions().length;
-		const currTagsCount = getTagsCount(this.app.metadataCache);
+		const currNoteCount = this.getMarkdownFilesCount();
+		const currInternalLinkCount = this.getInternalLinksCount();
+		const currTagsCount = this.getTagsCount();
 
 		if (currNoteCount > this.internalCounts.noteCount) {
 			this.settings.notesCreated +=
