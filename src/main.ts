@@ -1,11 +1,13 @@
-import { Notice, Plugin, TAbstractFile } from "obsidian";
-import { DEFAULT_SETTINGS } from "src/settings";
-import type { Settings } from "src/settings";
-import { AchievementsSettingTab } from "src/settings-tab/SettingsTab";
-import { SEEDED_ACHIEVEMENTS } from "src/seededAchievements";
-import type { AchievementType } from "src/seededAchievements";
-import { onCommandTrigger } from "src/commands";
+import { Notice, Plugin, TAbstractFile, type CachedMetadata } from "obsidian";
+import { DEFAULT_SETTINGS, type Settings } from "./settings";
+import { AchievementsSettingTab } from "./settings-tab/SettingsTab";
+import {
+	SEEDED_ACHIEVEMENTS,
+	type AchievementType,
+} from "./seededAchievements";
+import { onCommandTrigger } from "./commands";
 import store from "./store";
+import { fileHasCallout } from "./markdownHelpers";
 
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
@@ -17,8 +19,8 @@ export default class AchievementsPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerEvent(
-			this.app.metadataCache.on("changed", (file, _data, _cache) => {
-				this.handleFileCreateUpdateDelete(file);
+			this.app.metadataCache.on("changed", (file, data, cache) => {
+				this.handleFileCreateUpdateDelete(file, cache);
 			})
 		);
 
@@ -84,7 +86,10 @@ export default class AchievementsPlugin extends Plugin {
 		await this.saveSettings();
 	}
 
-	async handleFileCreateUpdateDelete(file: TAbstractFile) {
+	async handleFileCreateUpdateDelete(
+		file: TAbstractFile,
+		cache?: CachedMetadata
+	) {
 		const currNoteCount = file.vault.getMarkdownFiles().length;
 		const currInternalLinkCount =
 			app.fileManager.getAllLinkResolutions().length;
@@ -106,6 +111,15 @@ export default class AchievementsPlugin extends Plugin {
 				currInternalLinkCount - this.settings.internalLinkCount;
 			this.settings.internalLinkCount = currInternalLinkCount;
 			this.getNewAchievementMaybe("internalLinksCreated");
+		}
+
+		if (
+			this.settings.calloutsCreated === 0 &&
+			cache &&
+			fileHasCallout(cache)
+		) {
+			this.settings.calloutsCreated = 1;
+			this.getNewAchievementMaybe("calloutsCreated");
 		}
 
 		await this.saveSettings();

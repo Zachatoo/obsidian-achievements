@@ -3,7 +3,8 @@ export type AchievementType =
 	| "notesDeleted"
 	| "internalLinksCreated"
 	| "commandPaletteOpened"
-	| "quickSwitcherOpened";
+	| "quickSwitcherOpened"
+	| "calloutsCreated";
 
 export interface Achievement {
 	id: string;
@@ -95,6 +96,14 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		type: "quickSwitcherOpened",
 		name: "Quickly now",
 		description: "You've opened the quick switcher. Wow that was fast!",
+		requiredOccurenceCount: 1,
+	},
+	{
+		id: "oneCallout",
+		type: "calloutsCreated",
+		name: "Callouts",
+		description:
+			"You've created a callout. Just felt like that needed to be called out.",
 		requiredOccurenceCount: 1,
 	},
 ];
