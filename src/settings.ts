@@ -8,6 +8,7 @@ export interface Settings {
 	commandPaletteOpened: number;
 	quickSwitcherOpened: number;
 	calloutsCreated: number;
+	headingLevelsCreated: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -20,4 +21,5 @@ export const DEFAULT_SETTINGS: Settings = {
 	commandPaletteOpened: 0,
 	quickSwitcherOpened: 0,
 	calloutsCreated: 0,
+	headingLevelsCreated: 0,
 };

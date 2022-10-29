@@ -4,7 +4,8 @@ export type AchievementType =
 	| "internalLinksCreated"
 	| "commandPaletteOpened"
 	| "quickSwitcherOpened"
-	| "calloutsCreated";
+	| "calloutsCreated"
+	| "headingLevelsCreated";
 
 export interface Achievement {
 	id: string;
@@ -105,5 +106,19 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		description:
 			"You've created a callout. Just felt like that needed to be called out.",
 		requiredOccurenceCount: 1,
+	},
+	{
+		id: "oneLevelHeading",
+		type: "headingLevelsCreated",
+		name: "Headings",
+		description: "You've created a heading.",
+		requiredOccurenceCount: 1,
+	},
+	{
+		id: "threeLevelHeadings",
+		type: "headingLevelsCreated",
+		name: "Nested headings",
+		description: "You've created at least 3 levels of nested headings.",
+		requiredOccurenceCount: 3,
 	},
 ];

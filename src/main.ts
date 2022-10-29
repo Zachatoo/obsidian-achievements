@@ -7,7 +7,7 @@ import {
 } from "./seededAchievements";
 import { onCommandTrigger } from "./commands";
 import store from "./store";
-import { fileHasCallout } from "./markdownHelpers";
+import { fileHasCallout, getFileHeadingLevelsCount } from "./markdownHelpers";
 
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
@@ -113,13 +113,17 @@ export default class AchievementsPlugin extends Plugin {
 			this.getNewAchievementMaybe("internalLinksCreated");
 		}
 
-		if (
-			this.settings.calloutsCreated === 0 &&
-			cache &&
-			fileHasCallout(cache)
-		) {
-			this.settings.calloutsCreated = 1;
-			this.getNewAchievementMaybe("calloutsCreated");
+		if (cache) {
+			if (this.settings.calloutsCreated === 0 && fileHasCallout(cache)) {
+				this.settings.calloutsCreated = 1;
+				this.getNewAchievementMaybe("calloutsCreated");
+			}
+
+			const headingLevelsCount = getFileHeadingLevelsCount(cache);
+			if (headingLevelsCount > this.settings.headingLevelsCreated) {
+				this.settings.headingLevelsCreated = headingLevelsCount;
+				this.getNewAchievementMaybe("headingLevelsCreated");
+			}
 		}
 
 		await this.saveSettings();
