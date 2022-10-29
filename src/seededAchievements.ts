@@ -17,7 +17,7 @@ export interface Achievement {
 
 export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 	{
-		id: "firstNote",
+		id: "notes-created:1",
 		type: "notesCreated",
 		name: "Baby's first note",
 		description:
@@ -25,35 +25,35 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		requiredOccurenceCount: 1,
 	},
 	{
-		id: "tenNotes",
+		id: "notes-created:10",
 		type: "notesCreated",
 		name: "Note taker",
 		description: "You've created ten notes. You're serious, aren't you?",
 		requiredOccurenceCount: 10,
 	},
 	{
-		id: "oneHundredNotes",
+		id: "notes-created:100",
 		type: "notesCreated",
 		name: "100 club",
 		description: "You've created 100 notes! Welcome to the club!",
 		requiredOccurenceCount: 100,
 	},
 	{
-		id: "mileHighClub",
+		id: "note-created:5280",
 		type: "notesCreated",
 		name: "Mile high club",
 		description: "You've created 5280 notes. You're flying!",
 		requiredOccurenceCount: 5280,
 	},
 	{
-		id: "tenNotesDeleted",
+		id: "notes-deleted:10",
 		type: "notesDeleted",
 		name: "Taking out the trash",
 		description: "You've deleted 10 notes. Way to keep your vault tidy!",
 		requiredOccurenceCount: 10,
 	},
 	{
-		id: "firstInternalLink",
+		id: "internal-links-created:1",
 		type: "internalLinksCreated",
 		name: "Linking your thinking",
 		description:
@@ -61,7 +61,7 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		requiredOccurenceCount: 1,
 	},
 	{
-		id: "tenInternalLinks",
+		id: "internal-links-created:10",
 		type: "internalLinksCreated",
 		name: "Making connections",
 		description:
@@ -69,7 +69,7 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		requiredOccurenceCount: 10,
 	},
 	{
-		id: "oneHundredInternalLinks",
+		id: "internal-links-created:100",
 		type: "internalLinksCreated",
 		name: "Conspiracy theorist",
 		description:
@@ -77,7 +77,7 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		requiredOccurenceCount: 100,
 	},
 	{
-		id: "oneThousandInternalLinks",
+		id: "internal-links-created:1000",
 		type: "internalLinksCreated",
 		name: "Air traffic controller",
 		description:
@@ -100,7 +100,7 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		requiredOccurenceCount: 1,
 	},
 	{
-		id: "oneCallout",
+		id: "callouts:1",
 		type: "calloutsCreated",
 		name: "Callouts",
 		description:
@@ -108,14 +108,14 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		requiredOccurenceCount: 1,
 	},
 	{
-		id: "oneLevelHeading",
+		id: "heading-levels:1",
 		type: "headingLevelsCreated",
 		name: "Headings",
 		description: "You've created a heading.",
 		requiredOccurenceCount: 1,
 	},
 	{
-		id: "threeLevelHeadings",
+		id: "heading-levels:3",
 		type: "headingLevelsCreated",
 		name: "Nested headings",
 		description: "You've created at least 3 levels of nested headings.",
