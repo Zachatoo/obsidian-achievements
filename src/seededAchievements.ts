@@ -5,7 +5,8 @@ export type AchievementType =
 	| "commandPaletteOpened"
 	| "quickSwitcherOpened"
 	| "calloutsCreated"
-	| "headingLevelsCreated";
+	| "headingLevelsCreated"
+	| "tagsCreated";
 
 export interface Achievement {
 	id: string;
@@ -120,5 +121,26 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		name: "Nested headings",
 		description: "You've created at least 3 levels of nested headings.",
 		requiredOccurenceCount: 3,
+	},
+	{
+		id: "tags:1",
+		type: "tagsCreated",
+		name: "Tags",
+		description: "You've created a tag.",
+		requiredOccurenceCount: 1,
+	},
+	{
+		id: "tags:5",
+		type: "tagsCreated",
+		name: "Tags",
+		description: "You've created five tags.",
+		requiredOccurenceCount: 5,
+	},
+	{
+		id: "tags:20",
+		type: "tagsCreated",
+		name: "Tags",
+		description: "You've created twenty tags.",
+		requiredOccurenceCount: 20,
 	},
 ];

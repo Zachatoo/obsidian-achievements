@@ -17,4 +17,8 @@ declare module "obsidian" {
 	interface Commands {
 		executeCommand: (command: Command) => boolean;
 	}
+
+	interface MetadataCache {
+		getTags: () => { [key: string]: number };
+	}
 }
