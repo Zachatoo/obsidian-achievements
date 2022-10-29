@@ -5,6 +5,7 @@
 	"main": "src/main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
+		"test": "vitest",
 		"typecheck": "tsc -noEmit -skipLibCheck",
 		"lint": "eslint",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
@@ -32,7 +33,8 @@
 		"svelte-portal": "^2.2.0",
 		"svelte-preprocess": "^4.10.7",
 		"tslib": "2.4.0",
-		"typescript": "4.7.4"
+		"typescript": "4.7.4",
+		"vitest": "^0.24.3"
 	},
 	"dependencies": {
 		"monkey-around": "^2.3.0"

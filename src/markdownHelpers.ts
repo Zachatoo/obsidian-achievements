@@ -1,7 +1,10 @@
 import type { CachedMetadata } from "obsidian";
 
 export function fileHasCallout(cache: CachedMetadata) {
-	return cache.sections?.some((section) => section.type === "callout");
+	if (!cache.sections) {
+		return false;
+	}
+	return cache.sections.some((section) => section.type === "callout");
 }
 
 export function getFileHeadingLevelsCount(cache: CachedMetadata) {
