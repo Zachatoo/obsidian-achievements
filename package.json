@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"test": "vitest",
+		"test:ci": "vitest run",
 		"typecheck": "tsc -noEmit -skipLibCheck",
 		"lint": "eslint",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
