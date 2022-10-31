@@ -22,7 +22,7 @@ jobs:
                   node-version: 16
 
             - name: Lint
-              run: eslint . --ext .js,.jsx,.ts,.tsx,.svelte
+              run: npm run lint
 
     typecheck:
         name: Type Check

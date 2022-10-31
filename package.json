@@ -8,7 +8,7 @@
 		"test": "vitest",
 		"test:ci": "vitest run",
 		"typecheck": "tsc -noEmit -skipLibCheck",
-		"lint": "eslint",
+		"lint": "npx eslint . --ext .ts,.svelte",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
 		"prepare": "husky install"

@@ -13,7 +13,7 @@ import type { InternalCounts } from "./InternalCounts";
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
 	internalCounts: InternalCounts;
-	uninstallCommands: Function[] = [];
+	uninstallCommands: (() => void)[] = [];
 
 	async onload() {
 		console.log("loading Achievements plugin");
