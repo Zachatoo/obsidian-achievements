@@ -9,6 +9,10 @@ import { onCommandTrigger } from "./commands";
 import store from "./store";
 import { fileHasCallout, getFileHeadingLevelsCount } from "./markdownHelpers";
 import type { InternalCounts } from "./InternalCounts";
+import {
+	AchievementsView,
+	VIEW_TYPE_ACHIEVEMENTS,
+} from "./achievements-view/AchievementsView";
 
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
@@ -21,6 +25,11 @@ export default class AchievementsPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.setupInternalCounts();
+
+		this.registerView(
+			VIEW_TYPE_ACHIEVEMENTS,
+			(leaf) => new AchievementsView(leaf, this)
+		);
 
 		this.registerEvent(
 			this.app.metadataCache.on("changed", (file, data, cache) => {
@@ -50,11 +59,22 @@ export default class AchievementsPlugin extends Plugin {
 			})
 		);
 
+		this.addCommand({
+			id: "show-achievements-view",
+			name: "Show Achievements Panel",
+			callback: () => {
+				this.activateView();
+			},
+		});
+
 		this.addSettingTab(new AchievementsSettingTab(this.app, this));
 	}
 
 	onunload() {
 		console.log("unloading Achievements plugin");
+
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_ACHIEVEMENTS);
+
 		this.uninstallCommands.forEach((uninstallCommand) => {
 			uninstallCommand();
 		});
@@ -84,6 +104,19 @@ export default class AchievementsPlugin extends Plugin {
 			internalLinkCount: this.getInternalLinksCount(),
 			tagCount: this.getTagsCount(),
 		};
+	}
+
+	async activateView() {
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_ACHIEVEMENTS);
+
+		await this.app.workspace.getRightLeaf(false).setViewState({
+			type: VIEW_TYPE_ACHIEVEMENTS,
+			active: true,
+		});
+
+		this.app.workspace.revealLeaf(
+			this.app.workspace.getLeavesOfType(VIEW_TYPE_ACHIEVEMENTS)[0]
+		);
 	}
 
 	getMarkdownFilesCount() {
