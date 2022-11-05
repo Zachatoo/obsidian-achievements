@@ -195,7 +195,7 @@ export default class AchievementsPlugin extends Plugin {
 		if (newAchievements.length > 0) {
 			newAchievements.forEach((achievement) => {
 				this.settings.achievedAchievementIDs.push(achievement.id);
-				new Notice(`${achievement.name}\n${achievement.description}`);
+				new Notice(`${achievement.name}\n${achievement.popupMessage}`);
 			});
 		}
 	}
