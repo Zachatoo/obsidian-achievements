@@ -17,7 +17,6 @@ import {
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
 	internalCounts: InternalCounts;
-	uninstallCommands: (() => void)[] = [];
 
 	async onload() {
 		console.log("loading Achievements plugin");
@@ -43,7 +42,7 @@ export default class AchievementsPlugin extends Plugin {
 			)
 		);
 
-		this.uninstallCommands.push(
+		this.register(
 			onCommandTrigger("command-palette:open", async () => {
 				this.settings.commandPaletteOpened += 1;
 				this.getNewAchievementMaybe("commandPaletteOpened");
@@ -51,7 +50,15 @@ export default class AchievementsPlugin extends Plugin {
 			})
 		);
 
-		this.uninstallCommands.push(
+		this.register(
+			onCommandTrigger("command-palette:open", async () => {
+				this.settings.commandPaletteOpened += 1;
+				this.getNewAchievementMaybe("commandPaletteOpened");
+				await this.saveSettings();
+			})
+		);
+
+		this.register(
 			onCommandTrigger("switcher:open", async () => {
 				this.settings.quickSwitcherOpened += 1;
 				this.getNewAchievementMaybe("quickSwitcherOpened");
@@ -74,10 +81,6 @@ export default class AchievementsPlugin extends Plugin {
 		console.log("unloading Achievements plugin");
 
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_ACHIEVEMENTS);
-
-		this.uninstallCommands.forEach((uninstallCommand) => {
-			uninstallCommand();
-		});
 	}
 
 	async loadSettings() {
