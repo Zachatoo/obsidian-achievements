@@ -13,6 +13,8 @@ import {
 	AchievementsView,
 	VIEW_TYPE_ACHIEVEMENTS,
 } from "./achievements-view/AchievementsView";
+import wasmBin from "../pkg/obsidian_achievements_bg.wasm";
+import initWasm, { add } from "../pkg/obsidian_achievements.js";
 
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
@@ -20,6 +22,8 @@ export default class AchievementsPlugin extends Plugin {
 
 	async onload() {
 		console.log("loading Achievements plugin");
+
+		await this.loadWasm();
 
 		await this.loadSettings();
 
@@ -81,6 +85,11 @@ export default class AchievementsPlugin extends Plugin {
 		console.log("unloading Achievements plugin");
 
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_ACHIEVEMENTS);
+	}
+
+	async loadWasm() {
+		await initWasm(wasmBin);
+		console.log(add(5, 2));
 	}
 
 	async loadSettings() {

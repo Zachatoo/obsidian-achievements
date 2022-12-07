@@ -4,12 +4,13 @@
 	"description": "Add achievements to Obsidian.",
 	"main": "src/main.js",
 	"scripts": {
-		"dev": "node esbuild.config.mjs",
+		"dev": "npm run wasm && node esbuild.config.mjs",
 		"test": "vitest",
 		"test:ci": "vitest run",
 		"typecheck": "tsc -noEmit -skipLibCheck",
 		"lint": "npx eslint . --ext .ts,.svelte",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"wasm": "wasm-pack build --target web",
+		"build": "npm run wasm && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
 		"prepare": "husky install"
 	},
