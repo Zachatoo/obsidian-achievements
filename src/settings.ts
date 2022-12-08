@@ -1,6 +1,6 @@
 export interface Settings {
 	achievedAchievementIDs: string[];
-	processedFiles: Set<bigint>;
+	processedFiles: string[];
 	notesCreated: number;
 	notesDeleted: number;
 	internalLinksCreated: number;
@@ -13,7 +13,7 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
 	achievedAchievementIDs: [],
-	processedFiles: new Set(),
+	processedFiles: [],
 	notesCreated: 0,
 	notesDeleted: 0,
 	internalLinksCreated: 0,

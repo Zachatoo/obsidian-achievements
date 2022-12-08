@@ -19,6 +19,7 @@ import initWasm, { calculate_file_hash } from "../pkg/obsidian_achievements.js";
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
 	internalCounts: InternalCounts;
+	private processedFiles: Set<string>;
 
 	async onload() {
 		console.log("loading Achievements plugin");
@@ -85,12 +86,11 @@ export default class AchievementsPlugin extends Plugin {
 			DEFAULT_SETTINGS,
 			await this.loadData()
 		);
-		if (!(this.settings.processedFiles instanceof Set)) {
-			this.settings.processedFiles = new Set();
-		}
+		this.processedFiles = new Set(Array.from(this.settings.processedFiles));
 	}
 
 	async saveSettings() {
+		this.settings.processedFiles = Array.from(this.processedFiles);
 		await this.saveData(this.settings);
 		store.plugin.set(this);
 	}
@@ -140,7 +140,7 @@ export default class AchievementsPlugin extends Plugin {
 	async handleFileChanged(file: TFile, data: string, cache?: CachedMetadata) {
 		const { mtime, ctime } = file.stat;
 		const hash = calculate_file_hash(file.path, data, mtime, ctime);
-		if (this.settings.processedFiles.has(hash)) {
+		if (this.processedFiles.has(hash)) {
 			return;
 		}
 
@@ -181,7 +181,7 @@ export default class AchievementsPlugin extends Plugin {
 			}
 		}
 
-		this.settings.processedFiles.add(hash);
+		this.processedFiles.add(hash);
 
 		await this.saveSettings();
 	}

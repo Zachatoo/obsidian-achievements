@@ -16,7 +16,7 @@ struct File {
 }
 
 #[wasm_bindgen]
-pub fn calculate_file_hash(path: String, data: String, m_time: u32, c_time: u32) -> u64 {
+pub fn calculate_file_hash(path: String, data: String, m_time: u32, c_time: u32) -> String {
     let file: File = File {
         path: path,
         data: data,
@@ -25,7 +25,7 @@ pub fn calculate_file_hash(path: String, data: String, m_time: u32, c_time: u32)
             m_time: m_time,
         },
     };
-    return calculate_hash(&file);
+    return calculate_hash(&file).to_string();
 }
 
 pub fn calculate_hash<T: Hash>(t: &T) -> u64 {
