@@ -138,7 +138,8 @@ export default class AchievementsPlugin extends Plugin {
 	}
 
 	async handleFileChanged(file: TFile, data: string, cache?: CachedMetadata) {
-		const hash = calculate_file_hash(file.path, data);
+		const { mtime, ctime } = file.stat;
+		const hash = calculate_file_hash(file.path, data, mtime, ctime);
 		if (this.settings.processedFiles.has(hash)) {
 			return;
 		}
