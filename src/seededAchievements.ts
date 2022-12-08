@@ -1,6 +1,5 @@
 export type AchievementType =
 	| "notesCreated"
-	| "notesDeleted"
 	| "internalLinksCreated"
 	| "commandPaletteOpened"
 	| "quickSwitcherOpened"
@@ -51,14 +50,6 @@ export const SEEDED_ACHIEVEMENTS: Achievement[] = [
 		description: "Create one thousand notes.",
 		popupMessage: "You've created one thousand notes! That's impressive!",
 		requiredOccurenceCount: 1000,
-	},
-	{
-		id: "notes-deleted:10",
-		type: "notesDeleted",
-		name: "Taking out the trash",
-		description: "Delete ten notes.",
-		popupMessage: "You've deleted 10 notes. Way to keep your vault tidy!",
-		requiredOccurenceCount: 10,
 	},
 	{
 		id: "internal-links-created:1",

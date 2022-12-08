@@ -1,4 +1,4 @@
-import { Notice, Plugin, TAbstractFile, type CachedMetadata } from "obsidian";
+import { Notice, Plugin, TFile, type CachedMetadata } from "obsidian";
 import { DEFAULT_SETTINGS, type Settings } from "./settings";
 import { AchievementsSettingTab } from "./settings-tab/SettingsTab";
 import {
@@ -14,7 +14,7 @@ import {
 	VIEW_TYPE_ACHIEVEMENTS,
 } from "./achievements-view/AchievementsView";
 import wasmBin from "../pkg/obsidian_achievements_bg.wasm";
-import initWasm, { add } from "../pkg/obsidian_achievements.js";
+import initWasm, { calculate_file_hash } from "../pkg/obsidian_achievements.js";
 
 export default class AchievementsPlugin extends Plugin {
 	settings: Settings;
@@ -23,27 +23,14 @@ export default class AchievementsPlugin extends Plugin {
 	async onload() {
 		console.log("loading Achievements plugin");
 
-		await this.loadWasm();
-
-		await this.loadSettings();
+		await Promise.all([initWasm(wasmBin), this.loadSettings()]);
 
 		this.setupInternalCounts();
 
-		this.registerView(
-			VIEW_TYPE_ACHIEVEMENTS,
-			(leaf) => new AchievementsView(leaf, this)
-		);
-
 		this.registerEvent(
 			this.app.metadataCache.on("changed", (file, data, cache) => {
-				this.handleFileCreateUpdateDelete(file, cache);
+				this.handleFileChanged(file, data, cache);
 			})
-		);
-
-		this.registerEvent(
-			this.app.metadataCache.on("deleted", (file, _prevCache) =>
-				this.handleFileCreateUpdateDelete(file)
-			)
 		);
 
 		this.register(
@@ -70,6 +57,11 @@ export default class AchievementsPlugin extends Plugin {
 			})
 		);
 
+		this.registerView(
+			VIEW_TYPE_ACHIEVEMENTS,
+			(leaf) => new AchievementsView(leaf, this)
+		);
+
 		this.addCommand({
 			id: "show-achievements-view",
 			name: "Show Achievements Panel",
@@ -87,17 +79,15 @@ export default class AchievementsPlugin extends Plugin {
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_ACHIEVEMENTS);
 	}
 
-	async loadWasm() {
-		await initWasm(wasmBin);
-		console.log(add(5, 2));
-	}
-
 	async loadSettings() {
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
 			await this.loadData()
 		);
+		if (!(this.settings.processedFiles instanceof Set)) {
+			this.settings.processedFiles = new Set();
+		}
 	}
 
 	async saveSettings() {
@@ -147,10 +137,12 @@ export default class AchievementsPlugin extends Plugin {
 		return baseTagsArr.reduce((prev, curr) => prev + curr[1], 0);
 	}
 
-	async handleFileCreateUpdateDelete(
-		file: TAbstractFile,
-		cache?: CachedMetadata
-	) {
+	async handleFileChanged(file: TFile, data: string, cache?: CachedMetadata) {
+		const hash = calculate_file_hash(file.path, data);
+		if (this.settings.processedFiles.has(hash)) {
+			return;
+		}
+
 		const currNoteCount = this.getMarkdownFilesCount();
 		const currInternalLinkCount = this.getInternalLinksCount();
 		const currTagsCount = this.getTagsCount();
@@ -160,12 +152,6 @@ export default class AchievementsPlugin extends Plugin {
 				currNoteCount - this.internalCounts.noteCount;
 			this.internalCounts.noteCount = currNoteCount;
 			this.getNewAchievementMaybe("notesCreated");
-		}
-		if (currNoteCount < this.internalCounts.noteCount) {
-			this.settings.notesDeleted +=
-				this.internalCounts.noteCount - currNoteCount;
-			this.internalCounts.noteCount = currNoteCount;
-			this.getNewAchievementMaybe("notesDeleted");
 		}
 		if (currInternalLinkCount > this.internalCounts.internalLinkCount) {
 			this.settings.internalLinksCreated +=
@@ -193,6 +179,8 @@ export default class AchievementsPlugin extends Plugin {
 				this.getNewAchievementMaybe("headingLevelsCreated");
 			}
 		}
+
+		this.settings.processedFiles.add(hash);
 
 		await this.saveSettings();
 	}
