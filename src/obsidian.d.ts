@@ -1,15 +1,6 @@
 import "obsidian";
 
 declare module "obsidian" {
-	interface FileManager {
-		getAllLinkResolutions: () => {
-			reference: LinkCache;
-			resolvedFile: TFile;
-			resolvedPaths: string[];
-			sourceFile: TFile;
-		}[];
-	}
-
 	interface App {
 		commands: Commands;
 	}
@@ -20,5 +11,8 @@ declare module "obsidian" {
 
 	interface MetadataCache {
 		getTags: () => { [key: string]: number };
+		iterateReferences: (
+			callback: (sourcePath: string, reference: ReferenceCache) => any
+		) => any;
 	}
 }

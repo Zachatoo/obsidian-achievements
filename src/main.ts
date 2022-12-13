@@ -127,7 +127,11 @@ export default class AchievementsPlugin extends Plugin {
 	}
 
 	getInternalLinksCount() {
-		return this.app.fileManager.getAllLinkResolutions().length;
+		let count = 0;
+		this.app.metadataCache.iterateReferences(() => {
+			count++;
+		});
+		return count;
 	}
 
 	getTagsCount() {
