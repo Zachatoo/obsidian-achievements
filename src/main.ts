@@ -51,8 +51,8 @@ export default class AchievementsPlugin extends Plugin {
 			onCommandTrigger("command-palette:open", async () => {
 				const settings = this.getSettings();
 				settings.commandPaletteOpened += 1;
+				this.getNewAchievementMaybe("commandPaletteOpened", settings);
 				this.setSettings(settings);
-				this.getNewAchievementMaybe("commandPaletteOpened");
 			})
 		);
 
@@ -60,8 +60,8 @@ export default class AchievementsPlugin extends Plugin {
 			onCommandTrigger("switcher:open", async () => {
 				const settings = this.getSettings();
 				settings.quickSwitcherOpened += 1;
+				this.getNewAchievementMaybe("quickSwitcherOpened", settings);
 				this.setSettings(settings);
-				this.getNewAchievementMaybe("quickSwitcherOpened");
 			})
 		);
 
@@ -144,46 +144,45 @@ export default class AchievementsPlugin extends Plugin {
 			settings.notesCreated +=
 				currNoteCount - this.internalCounts.noteCount;
 			this.internalCounts.noteCount = currNoteCount;
-			this.getNewAchievementMaybe("notesCreated");
+			this.getNewAchievementMaybe("notesCreated", settings);
 		}
 		if (currNoteCount < this.internalCounts.noteCount) {
 			settings.notesDeleted +=
 				this.internalCounts.noteCount - currNoteCount;
 			this.internalCounts.noteCount = currNoteCount;
-			this.getNewAchievementMaybe("notesDeleted");
+			this.getNewAchievementMaybe("notesDeleted", settings);
 		}
 		if (currInternalLinkCount > this.internalCounts.internalLinkCount) {
 			settings.internalLinksCreated +=
 				currInternalLinkCount - this.internalCounts.internalLinkCount;
 			this.internalCounts.internalLinkCount = currInternalLinkCount;
-			this.getNewAchievementMaybe("internalLinksCreated");
+			this.getNewAchievementMaybe("internalLinksCreated", settings);
 		}
 
 		if (currTagsCount > this.internalCounts.tagCount) {
 			settings.tagsCreated +=
 				currTagsCount - this.internalCounts.tagCount;
 			this.internalCounts.tagCount = currTagsCount;
-			this.getNewAchievementMaybe("tagsCreated");
+			this.getNewAchievementMaybe("tagsCreated", settings);
 		}
 
 		if (cache) {
 			if (settings.calloutsCreated === 0 && fileHasCallout(cache)) {
 				settings.calloutsCreated = 1;
-				this.getNewAchievementMaybe("calloutsCreated");
+				this.getNewAchievementMaybe("calloutsCreated", settings);
 			}
 
 			const headingLevelsCount = getFileHeadingLevelsCount(cache);
 			if (headingLevelsCount > settings.headingLevelsCreated) {
 				settings.headingLevelsCreated = headingLevelsCount;
-				this.getNewAchievementMaybe("headingLevelsCreated");
+				this.getNewAchievementMaybe("headingLevelsCreated", settings);
 			}
 		}
 
 		this.setSettings(settings);
 	}
 
-	getNewAchievementMaybe(type: AchievementType) {
-		const settings = this.getSettings();
+	getNewAchievementMaybe(type: AchievementType, settings: Settings) {
 		const newAchievements = SEEDED_ACHIEVEMENTS.filter(
 			(achievement) =>
 				achievement.type === type &&
@@ -195,7 +194,6 @@ export default class AchievementsPlugin extends Plugin {
 				settings.achievedAchievementIDs.push(achievement.id);
 				new Notice(`${achievement.name}\n${achievement.popupMessage}`);
 			});
-			this.setSettings(settings);
 		}
 	}
 }
