@@ -1,17 +1,13 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
-import type AchievementsPlugin from "src/main";
 import AchievementsViewComponent from "./AchievementsView.svelte";
-import store from "src/store";
 
 export const VIEW_TYPE_ACHIEVEMENTS = "achievements-view";
 
 export class AchievementsView extends ItemView {
 	component: AchievementsViewComponent;
-	plugin: AchievementsPlugin;
 
-	constructor(leaf: WorkspaceLeaf, plugin: AchievementsPlugin) {
+	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
-		this.plugin = plugin;
 	}
 
 	getViewType() {
@@ -27,8 +23,6 @@ export class AchievementsView extends ItemView {
 	}
 
 	async onOpen() {
-		store.plugin.set(this.plugin);
-
 		this.component = new AchievementsViewComponent({
 			target: this.contentEl,
 		});

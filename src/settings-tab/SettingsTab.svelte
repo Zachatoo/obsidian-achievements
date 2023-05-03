@@ -1,13 +1,9 @@
 <script lang="ts">
 	import { Button, SettingItem } from "obsidian-svelte";
-	import type AchievementsPlugin from "src/main";
 	import { SEEDED_ACHIEVEMENTS } from "src/seededAchievements";
-	import store from "src/store";
+	import settingsStore from "src/settings";
 
 	export let openResetModal: () => void;
-
-	let plugin: AchievementsPlugin;
-	store.plugin.subscribe((p) => (plugin = p));
 </script>
 
 <h2>Achievements List</h2>
@@ -17,7 +13,7 @@
 		<progress
 			class="achievements-plugin__progress"
 			value={Math.min(
-				plugin.settings[achievement.type],
+				$settingsStore[achievement.type],
 				achievement.requiredOccurenceCount
 			)}
 			max={achievement.requiredOccurenceCount}

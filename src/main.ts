@@ -1,12 +1,12 @@
 import { Notice, Plugin, TAbstractFile, type CachedMetadata } from "obsidian";
-import { DEFAULT_SETTINGS, type Settings } from "./settings";
+import { get } from "svelte/store";
 import { AchievementsSettingTab } from "./settings-tab/SettingsTab";
 import {
 	SEEDED_ACHIEVEMENTS,
 	type AchievementType,
 } from "./seededAchievements";
 import { onCommandTrigger } from "./commands";
-import store from "./store";
+import settingsStore, { type Settings } from "./settings";
 import { fileHasCallout, getFileHeadingLevelsCount } from "./markdownHelpers";
 import type { InternalCounts } from "./InternalCounts";
 import {
@@ -15,19 +15,24 @@ import {
 } from "./achievements-view/AchievementsView";
 
 export default class AchievementsPlugin extends Plugin {
-	settings: Settings;
 	internalCounts: InternalCounts;
 
 	async onload() {
 		console.log("loading Achievements plugin");
 
-		await this.loadSettings();
+		settingsStore.init(await this.loadData());
+
+		this.register(
+			settingsStore.subscribe(async (settings) => {
+				await this.saveData(settings);
+			})
+		);
 
 		this.setupInternalCounts();
 
 		this.registerView(
 			VIEW_TYPE_ACHIEVEMENTS,
-			(leaf) => new AchievementsView(leaf, this)
+			(leaf) => new AchievementsView(leaf)
 		);
 
 		this.registerEvent(
@@ -44,25 +49,19 @@ export default class AchievementsPlugin extends Plugin {
 
 		this.register(
 			onCommandTrigger("command-palette:open", async () => {
-				this.settings.commandPaletteOpened += 1;
+				const settings = this.getSettings();
+				settings.commandPaletteOpened += 1;
+				this.setSettings(settings);
 				this.getNewAchievementMaybe("commandPaletteOpened");
-				await this.saveSettings();
-			})
-		);
-
-		this.register(
-			onCommandTrigger("command-palette:open", async () => {
-				this.settings.commandPaletteOpened += 1;
-				this.getNewAchievementMaybe("commandPaletteOpened");
-				await this.saveSettings();
 			})
 		);
 
 		this.register(
 			onCommandTrigger("switcher:open", async () => {
-				this.settings.quickSwitcherOpened += 1;
+				const settings = this.getSettings();
+				settings.quickSwitcherOpened += 1;
+				this.setSettings(settings);
 				this.getNewAchievementMaybe("quickSwitcherOpened");
-				await this.saveSettings();
 			})
 		);
 
@@ -83,22 +82,12 @@ export default class AchievementsPlugin extends Plugin {
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_ACHIEVEMENTS);
 	}
 
-	async loadSettings() {
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			await this.loadData()
-		);
+	getSettings() {
+		return get(settingsStore);
 	}
 
-	async saveSettings() {
-		await this.saveData(this.settings);
-		store.plugin.set(this);
-	}
-
-	async resetSettings() {
-		this.settings = { ...DEFAULT_SETTINGS };
-		await this.saveSettings();
+	setSettings(settings: Settings) {
+		settingsStore.set(settings);
 	}
 
 	setupInternalCounts() {
@@ -149,61 +138,64 @@ export default class AchievementsPlugin extends Plugin {
 		const currNoteCount = this.getMarkdownFilesCount();
 		const currInternalLinkCount = this.getInternalLinksCount();
 		const currTagsCount = this.getTagsCount();
+		const settings = this.getSettings();
 
 		if (currNoteCount > this.internalCounts.noteCount) {
-			this.settings.notesCreated +=
+			settings.notesCreated +=
 				currNoteCount - this.internalCounts.noteCount;
 			this.internalCounts.noteCount = currNoteCount;
 			this.getNewAchievementMaybe("notesCreated");
 		}
 		if (currNoteCount < this.internalCounts.noteCount) {
-			this.settings.notesDeleted +=
+			settings.notesDeleted +=
 				this.internalCounts.noteCount - currNoteCount;
 			this.internalCounts.noteCount = currNoteCount;
 			this.getNewAchievementMaybe("notesDeleted");
 		}
 		if (currInternalLinkCount > this.internalCounts.internalLinkCount) {
-			this.settings.internalLinksCreated +=
+			settings.internalLinksCreated +=
 				currInternalLinkCount - this.internalCounts.internalLinkCount;
 			this.internalCounts.internalLinkCount = currInternalLinkCount;
 			this.getNewAchievementMaybe("internalLinksCreated");
 		}
 
 		if (currTagsCount > this.internalCounts.tagCount) {
-			this.settings.tagsCreated +=
+			settings.tagsCreated +=
 				currTagsCount - this.internalCounts.tagCount;
 			this.internalCounts.tagCount = currTagsCount;
 			this.getNewAchievementMaybe("tagsCreated");
 		}
 
 		if (cache) {
-			if (this.settings.calloutsCreated === 0 && fileHasCallout(cache)) {
-				this.settings.calloutsCreated = 1;
+			if (settings.calloutsCreated === 0 && fileHasCallout(cache)) {
+				settings.calloutsCreated = 1;
 				this.getNewAchievementMaybe("calloutsCreated");
 			}
 
 			const headingLevelsCount = getFileHeadingLevelsCount(cache);
-			if (headingLevelsCount > this.settings.headingLevelsCreated) {
-				this.settings.headingLevelsCreated = headingLevelsCount;
+			if (headingLevelsCount > settings.headingLevelsCreated) {
+				settings.headingLevelsCreated = headingLevelsCount;
 				this.getNewAchievementMaybe("headingLevelsCreated");
 			}
 		}
 
-		await this.saveSettings();
+		this.setSettings(settings);
 	}
 
 	getNewAchievementMaybe(type: AchievementType) {
+		const settings = this.getSettings();
 		const newAchievements = SEEDED_ACHIEVEMENTS.filter(
 			(achievement) =>
 				achievement.type === type &&
-				this.settings[type] >= achievement.requiredOccurenceCount &&
-				!this.settings.achievedAchievementIDs.includes(achievement.id)
+				settings[type] >= achievement.requiredOccurenceCount &&
+				!settings.achievedAchievementIDs.includes(achievement.id)
 		);
 		if (newAchievements.length > 0) {
 			newAchievements.forEach((achievement) => {
-				this.settings.achievedAchievementIDs.push(achievement.id);
+				settings.achievedAchievementIDs.push(achievement.id);
 				new Notice(`${achievement.name}\n${achievement.popupMessage}`);
 			});
+			this.setSettings(settings);
 		}
 	}
 }
